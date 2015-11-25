@@ -10,13 +10,13 @@ go get github.com/opencoconut/coconutgo
 
 Use the [API Request Builder](https://app.coconut.co/job/new) to generate a config file that match your specific workflow.
 
-Example of `heywatch.conf`:
+Example of `coconut.conf`:
 
-```hw
+```ini
 var s3 = s3://accesskey:secretkey@mybucket
 
 set source  = http://yoursite.com/media/video.mp4
-set webhook = http://mysite.com/webhook/heywatch
+set webhook = http://mysite.com/webhook/coconut
 
 -> mp4  = $s3/videos/video.mp4
 -> webm = $s3/videos/video.webm
@@ -40,7 +40,7 @@ func main() {
   if job, err := coconut.Submit(string(config), "api-key"); err != nil {
     fmt.Println("Error:", err)
   } else {
-    fmt.Println("Job created:", job["id"])
+    fmt.Println("Job created:", job.Id)
   }
 }
 ```
