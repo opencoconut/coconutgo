@@ -6,38 +6,65 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
-const coconutURL = "https://api.coconut.co"
+type ApiSettings struct {
+	url       string
+	endPoint  string
+	userAgent string
+}
 
-type CoconutError struct {
+type Error struct {
 	Code    string `json:"error_code"`
 	Message string `json:"message"`
 	Status  string `json:"status"`
 }
 
-func (e CoconutError) Error() string {
+func (e Error) Error() string {
 	return fmt.Sprintf("%s (code: %s)", e.Message, e.Code)
 }
 
-type CoconutJob struct {
+type Job struct {
 	Id     int    `json:"id"`
 	Status string `json:"status"`
 }
 
-func Submit(Config string, APIKey string) (CoconutJob, error) {
-	url := coconutURL + "/v1/job"
+var api = ApiSettings{
+	url:       "https://api.coconut.co",
+	endPoint:  "/v1/job",
+	userAgent: "Coconut/1.4.0 (Go)",
+}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(Config)))
-	req.SetBasicAuth(APIKey, "")
+func NewJob(c Config, options ...string) (Job, error) {
+	if conf, err := c.String(); err != nil {
+		return Job{}, err
+	} else {
+		apiKey := ""
+		// By default we get the API key from the env variable COCONUT_API_KEY
+		if len(options) == 0 {
+			apiKey = os.Getenv("COCONUT_API_KEY")
+		} else {
+			// API key is given in second parameter
+			apiKey = options[0]
+		}
+		return Submit(conf, apiKey)
+	}
+}
+
+func Submit(c string, apiKey string) (Job, error) {
+	url := api.url + api.endPoint
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(c)))
+	req.SetBasicAuth(apiKey, "")
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("User-Agent", "HeyWatch/1.0.0 (Go)")
+	req.Header.Set("User-Agent", api.userAgent)
 	req.Header.Set("Content-Type", "text/plain")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return CoconutJob{}, err
+		return Job{}, err
 	}
 	defer resp.Body.Close()
 
@@ -45,18 +72,18 @@ func Submit(Config string, APIKey string) (CoconutJob, error) {
 
 	// Job created successfully
 	if resp.StatusCode == 201 {
-		job := CoconutJob{}
+		job := Job{}
 		if err := json.Unmarshal([]byte(body), &job); err != nil {
-			return CoconutJob{}, err
+			return Job{}, err
 		} else {
 			return job, nil
 		}
 	} else {
-		coconutErr := CoconutError{}
+		coconutErr := Error{}
 		if err := json.Unmarshal([]byte(body), &coconutErr); err != nil {
-			return CoconutJob{}, err
+			return Job{}, err
 		} else {
-			return CoconutJob{}, coconutErr
+			return Job{}, coconutErr
 		}
 	}
 }
