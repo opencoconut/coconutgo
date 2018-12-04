@@ -8,7 +8,7 @@ go get github.com/opencoconut/coconutgo
 
 ## Submitting the job
 
-Use the [API Request Builder](https://app.coconut.co/job/new) to generate a config file that match your specific workflow.
+Use the [API Request Builder](https://app.coconut.co/jobs/new) to generate a config file that match your specific workflow.
 
 Example of `coconut.conf`:
 
