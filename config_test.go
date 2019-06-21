@@ -68,3 +68,25 @@ func TestGenerateConfigWithFile(t *testing.T) {
 	c, _ := conf.String()
 	assert.Equal(t, generated, c)
 }
+
+func TestSetApiVersion(t *testing.T) {
+	conf := Config{
+		ApiVersion: "beta",
+		Source:     "https://s3-eu-west-1.amazonaws.com/files.coconut.co/test.mp4",
+		Webhook:    "http://mysite.com/webhook?vid=$vid&user=$user",
+		Outputs: Outputs{
+			"mp4": "$s3/vid.mp4",
+		},
+	}
+
+	generated := strings.Join([]string{
+		"set api_version = beta",
+		"set source = https://s3-eu-west-1.amazonaws.com/files.coconut.co/test.mp4",
+		"set webhook = http://mysite.com/webhook?vid=$vid&user=$user",
+		"",
+		"-> mp4 = $s3/vid.mp4",
+	}, "\n")
+
+	c, _ := conf.String()
+	assert.Equal(t, generated, c)
+}

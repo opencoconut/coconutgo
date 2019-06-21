@@ -17,9 +17,9 @@ func TestSubmitJob(t *testing.T) {
 	}
 
 	if job, err := NewJob(conf); err != nil {
-		t.Errorf("Error:", err)
+		t.Errorf("Error: %s", err)
 	} else {
-		t.Logf("Job created:", job.Id)
+		t.Logf("Job created: %d", job.Id)
 	}
 }
 
@@ -61,8 +61,8 @@ func TestSubmitFile(t *testing.T) {
 	}
 
 	if job, err := NewJob(conf); err != nil {
-		t.Errorf("Error:", err)
+		t.Errorf("Error: %s", err)
 	} else {
-		t.Logf("Job created:", job.Id)
+		t.Logf("Job created: %d", job.Id)
 	}
 }

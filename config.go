@@ -8,11 +8,12 @@ import (
 )
 
 type Config struct {
-	Source  string
-	Webhook string
-	Conf    string
-	Outputs Outputs
-	Vars    Vars
+	ApiVersion string
+	Source     string
+	Webhook    string
+	Conf       string
+	Outputs    Outputs
+	Vars       Vars
 }
 
 type Outputs map[string]string
@@ -35,6 +36,10 @@ func (c Config) String() (string, error) {
 		for v, val := range vars {
 			conf = append(conf, fmt.Sprintf("var %s = %s", v, val))
 		}
+	}
+
+	if apiVersion := c.ApiVersion; apiVersion != "" {
+		conf = append(conf, fmt.Sprintf("set api_version = %s", apiVersion))
 	}
 
 	if source := c.Source; source != "" {
