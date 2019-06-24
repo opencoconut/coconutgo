@@ -11,7 +11,6 @@ import (
 
 type ApiSettings struct {
 	url       string
-	endPoint  string
 	userAgent string
 }
 
@@ -31,9 +30,16 @@ type Job struct {
 }
 
 var api = ApiSettings{
-	url:       "https://api.coconut.co",
-	endPoint:  "/v1/job",
+	url:       getEnv("COCONUT_URL", "https://api.coconut.co"),
 	userAgent: "Coconut/1.4.0 (Go)",
+}
+
+func getEnv(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return defaultValue
+	}
+	return value
 }
 
 func NewJob(c Config, options ...string) (Job, error) {
@@ -53,7 +59,7 @@ func NewJob(c Config, options ...string) (Job, error) {
 }
 
 func Submit(c string, apiKey string) (Job, error) {
-	url := api.url + api.endPoint
+	url := api.url + "/v1/job"
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(c)))
 	req.SetBasicAuth(apiKey, "")
