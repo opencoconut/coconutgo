@@ -66,3 +66,21 @@ func TestSubmitFile(t *testing.T) {
 		t.Logf("Job created: %d", job.Id)
 	}
 }
+
+func TestGetJob(t *testing.T) {
+	conf := Config{
+		Source:  "https://s3-eu-west-1.amazonaws.com/files.coconut.co/test.mp4",
+		Webhook: "http://mysite.com/webhook",
+		Outputs: Outputs{"mp4": "s3://a:s@bucket/video.mp4", "webm": "s3://a:s@bucket/video.webm"},
+	}
+
+	if job, err := NewJob(conf); err != nil {
+		t.Errorf("Error: %s", err)
+	} else {
+		if info, err := GetJob(job.Id); err != nil {
+			t.Errorf("Error: %s", err)
+		} else {
+			assert.Equal(t, info.Id, job.Id)
+		}
+	}
+}
