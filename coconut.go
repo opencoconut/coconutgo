@@ -25,8 +25,13 @@ func (e Error) Error() string {
 }
 
 type Job struct {
-	Id     int    `json:"id"`
-	Status string `json:"status"`
+	Id          int                    `json:"id"`
+	Status      string                 `json:"status"`
+	CreatedAt   string                 `json:"created_at"`
+	CompletedAt string                 `json:"completed_at"`
+	Progress    string                 `json:"progress"`
+	Errors      map[string]interface{} `json:"errors"`
+	OutputUrls  map[string]interface{} `json:"output_urls"`
 }
 
 var api = ApiSettings{
