@@ -8,7 +8,7 @@ go get github.com/opencoconut/coconutgo
 
 ## Submitting the job
 
-Use the [API Request Builder](https://app.coconut.co/job/new) to generate a config file that match your specific workflow.
+Use the [API Request Builder](https://app.coconut.co/jobs/new) to generate a config file that match your specific workflow.
 
 Example of `coconut.conf`:
 
@@ -19,7 +19,7 @@ set webhook = http://mysite.com/webhook/coconut
 
 -> mp4  = $s3/videos/video.mp4
 -> webm = $s3/videos/video.webm
--> jpg_300x = $s3/previews/thumbs_#num#.jpg, number=3
+-> jpg:300x = $s3/previews/thumbs_#num#.jpg, number=3
 ```
 
 Here is the Go code to submit the config file:
@@ -63,7 +63,7 @@ config := coconut.Config{
   Outputs: coconut.Outputs{
     "mp4": "$s3/videos/video_$vid.mp4",
     "webm": "$s3/videos/video_$vid.webm",
-    "jpg_300x": "$s3/previews/thumbs_#num#.jpg, number=3",
+    "jpg:300x": "$s3/previews/thumbs_#num#.jpg, number=3",
   }
 }
 
