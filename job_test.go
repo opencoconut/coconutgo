@@ -1,9 +1,10 @@
 package coconut
 
 import (
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const INPUT_URL = "https://s3-eu-west-1.amazonaws.com/files.coconut.co/bbb_800k.mp4"
@@ -63,6 +64,41 @@ func TestCreateJob(t *testing.T) {
 	})
 
 	j, err := cli.Job.Create(JobCreate{
+		Input: InputCreate{
+			"url": INPUT_URL,
+		},
+		Outputs: OutputCreate{
+			"mp4:240p": OutputParams{
+				"path": "/video.mp4",
+			},
+		},
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, j.Id)
+}
+
+func TestCreateJobWithSettingsSet(t *testing.T) {
+	cli := NewClient(Client{
+		APIKey: os.Getenv("COCONUT_API_KEY"),
+		Storage: Storage{
+			"service": "s3",
+			"region":  os.Getenv("AWS_REGION"),
+			"credentials": StorageCredentials{
+				"access_key_id":     os.Getenv("AWS_ACCESS_KEY_ID"),
+				"secret_access_key": os.Getenv("AWS_SECRET_ACCESS_KEY"),
+			},
+			"bucket": os.Getenv("AWS_BUCKET"),
+			"path":   "/coconutgo/tests/",
+		},
+		Notification: Notification{
+			"type": "http",
+			"url":  os.Getenv("COCONUT_WEBHOOK_URL"),
+		},
+	})
+
+	j, err := cli.Job.Create(JobCreate{
+		Settings: Settings{"ultrafast": true},
 		Input: InputCreate{
 			"url": INPUT_URL,
 		},

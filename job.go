@@ -29,12 +29,14 @@ type Output struct {
 }
 
 type JobCreate struct {
+	Settings     Settings
 	Input        InputCreate
 	Storage      Storage
 	Notification Notification
 	Outputs      OutputCreate
 }
 
+type Settings map[string]interface{}
 type InputCreate map[string]interface{}
 
 type OutputCreate map[string]interface{}
@@ -42,6 +44,10 @@ type OutputParams map[string]interface{}
 
 func (d JobCreate) ToParams() P {
 	m := make(map[string]interface{})
+	if d.Settings != nil {
+		m["settings"] = d.Settings
+	}
+
 	m["input"] = d.Input
 	m["storage"] = d.Storage
 	m["notification"] = d.Notification
