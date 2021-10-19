@@ -13,7 +13,7 @@ type Client struct {
 
 type Storage map[string]interface{}
 type StorageCredentials map[string]string
-type Notification map[string]string
+type Notification map[string]interface{}
 
 type JobClient struct {
 	Client Client
