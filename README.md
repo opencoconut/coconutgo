@@ -18,6 +18,8 @@ go get github.com/opencoconut/coconutgo
 
 The library needs you to set your API key which can be found in your [dashboard](https://app.coconut.co/api). Webhook URL and storage settings are optional but are very convenient because you set them only once.
 
+### Example
+
 ```go
 package main
 
@@ -28,8 +30,9 @@ import (
 )
 
 func main() {
+  // Initialize the Client
   cli := coconut.NewClient(coconut.Client{
-    APIKey: os.Getenv("k-api-key"),
+    APIKey: os.Getenv("COCONUT_API_KEY"),
     Storage: coconut.Storage{
       "service": "s3",
       "region":  "us-east-1",
@@ -45,6 +48,7 @@ func main() {
     },
   })
 
+  // Create a job
   job, err := cli.Job.Create(coconut.JobCreate{
     Input: coconut.InputCreate{
       "url": "https://mysite/path/file.mp4",
@@ -70,6 +74,30 @@ func main() {
     fmt.Printf("%# v", job)
   }
 }
+```
+
+### Choose the region
+
+```go
+cli.Region = "eu-west-1"
+```
+
+### Enabling Ultrafast Mode
+
+```go
+job, err := cli.Job.Create(coconut.JobCreate{
+  Settings: coconut.Settings{
+    "ultrafast": true
+  },
+  Input: coconut.InputCreate{
+    "url": "https://mysite/path/file.mp4",
+  },
+  Outputs: coconut.OutputCreate{
+    "mp4:2160p": coconut.OutputParams{
+      "path": "/4k.mp4",
+    },
+  },
+})
 ```
 
 ## Getting information about a job
